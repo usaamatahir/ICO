@@ -53,7 +53,7 @@ contract CryptoDevToken is ERC20, Ownable {
             }
         }
         require(amount > 0, "You have already claimed all the tokens");
-        _mint(sender, amount);
+        _mint(msg.sender, amount * tokensPerNFT);
     }
 
     /**
@@ -63,8 +63,9 @@ contract CryptoDevToken is ERC20, Ownable {
      */
 
     function withdraw() public onlyOwner {
-        address _owner = owner();
         uint256 amount = address(this).balance;
+        require(amount > 0, "Nothing to withdraw; contract balance empty");
+        address _owner = owner();
         (bool sent, ) = _owner.call{value: amount}("");
         require(sent, "Failed to send Ether");
     }
